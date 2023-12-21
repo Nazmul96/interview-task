@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transaction_details', function (Blueprint $table) {
-            $table->id('transaction_id');
-            $table->foreignId('user_id')->constrained('user_profiles');
+            $table->id();
+            $table->string('transaction_id');
+            $table->integer('user_id');
             $table->decimal('amount', 8, 2);
             $table->string('status');
             $table->timestamps();
@@ -26,7 +27,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('transaction_details', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
             $table->dropIfExists();
         });
     }

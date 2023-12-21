@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProfileRequest;
 use App\Http\Requests\UpdateProfileRequest;
+use App\Http\Resources\UserProfileResource;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,12 +19,10 @@ class ProfileController extends Controller
     {
         $name = $request->input('name');
 
-        $profiles = $name ? UserProfile::where('name', $name)->get() : UserProfile::all();
-
         return response()->json([
             'success' => true,
             'message' => 'User profiles retrieved successfully',
-            'data' => $profiles
+            'data'    => UserProfileResource::collection($name ? UserProfile::where('name', $name)->paginate(10) : UserProfile::paginate(10))
         ], Response::HTTP_OK);
     }
 
@@ -74,7 +73,7 @@ class ProfileController extends Controller
         if($user_profile) {         
             return response()->json([
                 'success' => true,
-                'data' => $user_profile,],Response::HTTP_OK);
+                'data' => new UserProfileResource($user_profile)],Response::HTTP_OK);
         }
 
     }
